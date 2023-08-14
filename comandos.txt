@@ -1,0 +1,27 @@
+docker network create my_network
+
+
+docker run -d --network my_network -v C:\Users\Sgp33\OneDrive\Escritorio\balanceador\php:/var/www/html --name web1 php:apache-bullseye
+docker run -d --network my_network -v C:\Users\Sgp33\OneDrive\Escritorio\balanceador\php:/var/www/html --name web2 php:apache-bullseye
+
+docker network connect my_network mi-contenedor-myslq
+
+docker exec -it web1 bash
+docker exec -it web2 bash
+
+apt-get update
+apt-get install -y libmysqli-dev
+docker-php-ext-install mysqli
+docker-php-ext-enable mysqli
+
+docker run -d --name haproxy -p 8085:80 -v $(pwd)/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg haproxy:latest
+
+docker run -d --name haproxy --network my_network -p 8085:80 -v C:\Users\Sgp33\OneDrive\Escritorio\balanceador\config:/usr/local/etc/haproxy/haproxy.cfg haproxy:latest
+
+echo "# Balanceador_de_carga_Grupo_2" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/SebaGPDev/Balanceador_de_carga_Grupo_2.git
+git push -u origin main
